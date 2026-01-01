@@ -19,19 +19,19 @@ OUTPUT_FILE_PATH = os.path.join(os.getcwd(), "data", "raw", WORKBOOK_NAME)
 # Reference Data
 stores = ["store A", "Store B", "Store C", "Store D", "Store E"]
 store_variants = [
-    "Store A", "Store a", "STORE A", "STORE-A", "Store-A",
-    "Store B", "Store b", "STORE B", "STORE-B", "Store-B",
-    "Store C", "Store c", "STORE C", "STORE-C", "Store-C",
-    "Store D", "Store d", "STORE D", "STORE-D", "Store-D",
-    "Store E", "Store e", "STORE E", "STORE-E", "Store-E"
+    "Store a", "STORE A", "STORE-A", "Store-A",
+    "Store b", "STORE B", "STORE-B", "Store-B",
+    "Store c", "STORE C", "STORE-C", "Store-C",
+    "Store d", "STORE D", "STORE-D", "Store-D",
+    "Store e", "STORE E", "STORE-E", "Store-E"
 ]
 
 regions = regions = ["North", "South", "East", "West"]
 region_variants = [
-    "North", "north", "NORTH", "Nort",
-    "South", "south", "SOUTH", "Sout",
-    "East",  "east",  "EAST",  "Est", 
-    "West",  "west",  "WEST",  "Wes",  
+    "north", "NORTH", "Nort",
+    "south", "SOUTH", "Sout",
+    "east",  "EAST",  "Est", 
+    "west",  "WEST",  "Wes",  
     "", None
 ]
 
@@ -43,8 +43,8 @@ products = [
 
 categories = ["Electronics", "Accessories"]
 category_variants = [
-    "Electronics", "Electronic", "electronics",
-    "Accessories", "Accessory", "Accesories", ""
+    "Electronic", "electronics", "electronic",
+    "Accessory", "accessories", "accessories", ""
 ]
 
 notes_pool = [
@@ -112,4 +112,23 @@ def random_last_updated():
         dt.strftime("%m/%d/%Y %I:%M %p")
     ])
 
+# Generate data
+data = []
+for _ in range(ROWS):
+    unit_price = random_price()
+    quantity = random_quantity()
+    row = {
+        "Sale Date": random_sale_date(),
+        "Store": random.choice(stores + store_variants),
+        "Region": random.choice(regions + region_variants),
+        "Product Name": random.choice(products),
+        "Category": random.choice(categories + category_variants),
+        "Unit Price": unit_price,
+        "Quanty": quantity,
+        "Total Sales": random_total_sales(unit_price, quantity),
+        "Notes": random.choice(notes_pool),
+        "Last Update": random_last_updated()
+    }
+    data.append(row)
 
+df = pd.DataFrame(data)
