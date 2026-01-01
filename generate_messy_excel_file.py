@@ -136,4 +136,10 @@ df = pd.DataFrame(data)
 # Inject duplicate rows (~1.5%)
 dup_count = int(ROWS * 0.015)
 df = pd.concat([df, df.sample(dup_count)], ignore_index=True)
- 
+
+# Write Excel
+with pd.ExcelWriter(OUTPUT_FILE_PATH, engine="openpyxl") as writer:
+    df.to_excel(writer, index=False, sheet_name=SHEET_NAME)
+
+print(f"Generated messy Excel file: {WORKBOOK_NAME}")
+print(f"Rows written: {len(df)}")
