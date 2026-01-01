@@ -112,34 +112,40 @@ def random_last_updated():
         dt.strftime("%m/%d/%Y %I:%M %p")
     ])
 
-# Generate data
-data = []
-for _ in range(ROWS):
-    unit_price = random_price()
-    quantity = random_quantity()
-    row = {
-        "Sale Date": random_sale_date(),
-        "Store": random.choice(stores + store_variants),
-        "Region": random.choice(regions + region_variants),
-        "Product Name": random.choice(products),
-        "Category": random.choice(categories + category_variants),
-        "Unit Price": unit_price,
-        "Quanty": quantity,
-        "Total Sales": random_total_sales(unit_price, quantity),
-        "Notes": random.choice(notes_pool),
-        "Last Update": random_last_updated()
-    }
-    data.append(row)
+def generate_data():
+    # Generate data
+    data = []
+    for _ in range(ROWS):
+        unit_price = random_price()
+        quantity = random_quantity()
+        row = {
+            "Sale Date": random_sale_date(),
+            "Store": random.choice(stores + store_variants),
+            "Region": random.choice(regions + region_variants),
+            "Product Name": random.choice(products),
+            "Category": random.choice(categories + category_variants),
+            "Unit Price": unit_price,
+            "Quanty": quantity,
+            "Total Sales": random_total_sales(unit_price, quantity),
+            "Notes": random.choice(notes_pool),
+            "Last Update": random_last_updated()
+        }
+        data.append(row)
 
-df = pd.DataFrame(data)
+    df = pd.DataFrame(data)
 
-# Inject duplicate rows (~1.5%)
-dup_count = int(ROWS * 0.015)
-df = pd.concat([df, df.sample(dup_count)], ignore_index=True)
+    # Inject duplicate rows (~1.5%)
+    dup_count = int(ROWS * 0.015)
+    df = pd.concat([df, df.sample(dup_count)], ignore_index=True)
 
-# Write Excel
-with pd.ExcelWriter(OUTPUT_FILE_PATH, engine="openpyxl") as writer:
-    df.to_excel(writer, index=False, sheet_name=SHEET_NAME)
+    # Write Excel
+    with pd.ExcelWriter(OUTPUT_FILE_PATH, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name=SHEET_NAME)
 
-print(f"Generated messy Excel file: {WORKBOOK_NAME}")
-print(f"Rows written: {len(df)}")
+    return df
+
+if __name__ == "__main__":
+    df = generate_data()
+    print(f"Generated messy Excel file: {WORKBOOK_NAME}")
+    print(f"Rows written: {len(df)}")
+    
