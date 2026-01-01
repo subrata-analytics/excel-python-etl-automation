@@ -132,3 +132,8 @@ for _ in range(ROWS):
     data.append(row)
 
 df = pd.DataFrame(data)
+
+# Inject duplicate rows (~1.5%)
+dup_count = int(ROWS * 0.015)
+df = pd.concat([df, df.sample(dup_count)], ignore_index=True)
+ 
