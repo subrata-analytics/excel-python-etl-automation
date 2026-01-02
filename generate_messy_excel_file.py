@@ -6,6 +6,7 @@ import pandas as pd
 import random
 from faker import Faker
 from datetime import date, datetime, timedelta
+from openpyxl import load_workbook
 
 
 fake = Faker()
@@ -145,7 +146,10 @@ def generate_data():
     return df
 
 if __name__ == "__main__":
-    df = generate_data()
-    print(f"Generated messy Excel file: {WORKBOOK_NAME}")
-    print(f"Rows written: {len(df)}")
+    # df = generate_data()
+    # print(f"Generated messy Excel file: {WORKBOOK_NAME}")
+    # print(f"Rows written: {len(df)}")
+
+    wb = load_workbook(OUTPUT_FILE_PATH)
+    print(wb.sheetnames)
     
