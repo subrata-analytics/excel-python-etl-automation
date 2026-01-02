@@ -126,7 +126,7 @@ def generate_data():
             "Product Name": random.choice(products),
             "Category": random.choice(categories + category_variants),
             "Unit Price": unit_price,
-            "Quanty": quantity,
+            "Quantity": quantity,
             "Total Sales": random_total_sales(unit_price, quantity),
             "Notes": random.choice(notes_pool),
             "Last Update": random_last_updated()
