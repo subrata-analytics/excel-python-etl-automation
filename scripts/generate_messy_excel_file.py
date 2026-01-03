@@ -10,12 +10,18 @@ from openpyxl import load_workbook
 
 
 fake = Faker()
+current_folder = os.path.dirname(__file__)
+parent_folder = os.path.dirname(current_folder)
+
 
 # Configuration
-ROWS = 50_000
 SHEET_NAME = "SalesData"
 WORKBOOK_NAME = "sales_transactions_2024.xlsx"
-OUTPUT_FILE_PATH = os.path.join(os.getcwd(), "data", "raw", WORKBOOK_NAME)
+OUTPUT_FILE_PATH = os.path.join(
+    parent_folder, 
+    "data", "raw", 
+    WORKBOOK_NAME
+)
 
 # Reference Data
 stores = ["store A", "Store B", "Store C", "Store D", "Store E"]
@@ -113,10 +119,11 @@ def random_last_updated():
         dt.strftime("%m/%d/%Y %I:%M %p")
     ])
 
-def generate_data():
+def generate_data(rows):
+    
     # Generate data
     data = []
-    for _ in range(ROWS):
+    for _ in range(rows):
         unit_price = random_price()
         quantity = random_quantity()
         row = {
@@ -136,7 +143,7 @@ def generate_data():
     df = pd.DataFrame(data)
 
     # Inject duplicate rows (~1.5%)
-    dup_count = int(ROWS * 0.015)
+    dup_count = int(rows * 0.015)
     df = pd.concat([df, df.sample(dup_count)], ignore_index=True)
 
     # Write Excel
@@ -145,11 +152,15 @@ def generate_data():
 
     return df
 
-if __name__ == "__main__":
-    # df = generate_data()
-    # print(f"Generated messy Excel file: {WORKBOOK_NAME}")
-    # print(f"Rows written: {len(df)}")
-
+def test_generated_data():
     wb = load_workbook(OUTPUT_FILE_PATH)
-    print(wb.sheetnames)
+    print(SHEET_NAME in wb.sheetnames)
+    ws = wb[SHEET_NAME]
+    print(f"Number of rows: {ws.max_row}")
+    print(f"Number of columns: {ws.max_column}")
+
+if __name__ == "__main__":
+    df = generate_data(100)
+    print(f"Generated messy Excel file: {WORKBOOK_NAME}")
+    print(f"Rows written: {len(df)}")
     
