@@ -11,6 +11,17 @@ def clean_text_safe(value):
     value = re.sub(r"[^\w\s\-&/]", "", value)  # remove junk chars
     return value
 
+def clean_numeric_data(value):
+    if pd.isna(value):
+        return None
+    
+    value = (str(value)
+             .strip()
+             .replace("$", "")
+             .replace(",", "")
+    )
+    return value
+
 def clean_dimensions(df: pd.DataFrame) -> pd.DataFrame:
     """
     Apply column specific normalization
@@ -99,9 +110,23 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     # clean dimensions
     df = clean_dimensions(df)
 
+    # Normalize numeric colums
+    numeric_cols = ["quantity", "unit_price", "total_sales"]
+    for col in numeric_cols:
+        df[col] = pd.to_numeric(
+                (
+                    df[col].apply(clean_numeric_data)
+                ),
+                errors="coerce"
+            )
+
+    # Feature engineering
+    df["total_sales"] = df["quantity"] * df["unit_price"]
+    
     # Handle missing values
     df = df[df["quantity"] > 0]
     df["unit_price"] = df["unit_price"].fillna(0)
+
 
     # Convert data types
     df["sale_date"] = pd.to_datetime(
@@ -109,16 +134,12 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
         errors="coerce"
     )
 
-    # Featire engineering
-    df["total_sales"] = df["quantity"] * df["unit_price"]
-
     df["sale_year"] = df["sale_date"].dt.year
     df["sale_month"] = df["sale_date"].dt.month
     df["sale_quarter"] = df["sale_date"].dt.quarter
     df["weekday"] = df["sale_date"].dt.day_name()
 
     # Filter invalid records
-    df["total_sales"] = pd.to_numeric(df["total_sales"], errors="coerce")
     df = df[df["total_sales"] >= 0]
 
     return df
