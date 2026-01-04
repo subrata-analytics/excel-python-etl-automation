@@ -120,9 +120,10 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
                 errors="coerce"
             )
     
-    # Drop if certain columns are NULL
+    # Drop rows for NULL values in certain columns
     df = df.dropna(
         subset=[
+            "sale_date",
             "category",
             "product_name",
             "region",
@@ -140,15 +141,19 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     df["unit_price"] = df["unit_price"].fillna(0)
 
     # Convert data types
-    df["sale_date"] = pd.to_datetime(
+    sale_date = pd.to_datetime(
         df["sale_date"],
-        errors="coerce"
+        errors="coerce",
+        format='mixed',
+        dayfirst=True   
     )
+    df["sale_date"] = sale_date
 
-    df["sale_year"] = df["sale_date"].dt.year
-    df["sale_month"] = df["sale_date"].dt.month
-    df["sale_quarter"] = df["sale_date"].dt.quarter
-    df["weekday"] = df["sale_date"].dt.day_name()
+    # Derive important date components from sale_date
+    df["sale_year"] = sale_date.dt.year
+    df["sale_month"] = sale_date.dt.month
+    df["sale_quarter"] = sale_date.dt.quarter
+    df["weekday"] = sale_date.dt.day_name()
 
     # Filter invalid records
     df = df[df["total_sales"] >= 0]
@@ -156,6 +161,7 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     # validation
     assert df["store"].str.contains(r"\s{2,}").sum() == 0
     assert df["region"].isna().sum() == 0
+    assert df["sale_date"].isna().sum() == 0
     assert df["region"].str.isupper().all()
     assert df["category"].str.isupper().all()
 
