@@ -43,7 +43,9 @@ def main():
     elif args.command == "etl":
         run_etl()
     else:
-        parser.error("You must specify a command: generate [--rows] or etl")
+        parser.error(
+            "You must specify a command: generate [--rows] or etl"
+        )
 
 
 if __name__ == "__main__":
