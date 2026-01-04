@@ -152,12 +152,14 @@ def generate_data(rows):
 
     return df
 
-def test_generated_data():
+def inspect_generated_data():
     wb = load_workbook(OUTPUT_FILE_PATH)
-    print(SHEET_NAME in wb.sheetnames)
     ws = wb[SHEET_NAME]
-    print(f"Number of rows: {ws.max_row}")
-    print(f"Number of columns: {ws.max_column}")
+    if SHEET_NAME in wb.sheetnames:
+        ws = wb[SHEET_NAME]
+        print(f"    1. Worksheet '{SHEET_NAME}' is found in the Excel file.")
+        print(f"    2. The worksheet contains: ", end="")
+        print(f"{ws.max_row} rows and {ws.max_column} columns.")
 
 if __name__ == "__main__":
     df = generate_data(100)
