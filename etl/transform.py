@@ -153,5 +153,11 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     # Filter invalid records
     df = df[df["total_sales"] >= 0]
 
+    # validation
+    assert df["store"].str.contains(r"\s{2,}").sum() == 0
+    assert df["region"].isna().sum() == 0
+    assert df["region"].str.isupper().all()
+    assert df["category"].str.isupper().all()
+
     return df
 
