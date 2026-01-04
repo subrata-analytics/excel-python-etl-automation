@@ -119,6 +119,18 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
                 ),
                 errors="coerce"
             )
+    
+    # Drop if certain columns are NULL
+    df = df.dropna(
+        subset=[
+            "category",
+            "product_name",
+            "region",
+            "quantity",
+            "unit_price"
+        ],
+        # how="all"
+    )
 
     # Feature engineering
     df["total_sales"] = df["quantity"] * df["unit_price"]
@@ -126,7 +138,6 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     # Handle missing values
     df = df[df["quantity"] > 0]
     df["unit_price"] = df["unit_price"].fillna(0)
-
 
     # Convert data types
     df["sale_date"] = pd.to_datetime(
