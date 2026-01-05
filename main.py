@@ -1,5 +1,6 @@
 import argparse
 from etl.etl_pipeline import run_etl
+from etl.profile import show_profile
 from utils.generate_messy_excel_file import (
     generate_data, 
     inspect_generated_data
@@ -9,6 +10,9 @@ from utils.generate_messy_excel_file import (
 def main():
     parser = argparse.ArgumentParser(description="Sales Data Tools")
     subparsers = parser.add_subparsers(dest="command")
+
+    # profile command
+    subparsers.add_parser("profile", help="Run profiler")
 
     # generate subcommand
     gen = subparsers.add_parser("generate", help="Generate random sales data")
@@ -28,7 +32,10 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "generate":
+    if args.command == "profile":
+        show_profile()
+
+    elif args.command == "generate":
         if args.rows <= 0:
             raise parser.error("rows must be a positive integer")
         
