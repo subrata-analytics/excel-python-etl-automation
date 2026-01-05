@@ -32,12 +32,9 @@ def main():
         if args.rows <= 0:
             raise parser.error("rows must be a positive integer")
         
-        df = generate_data(args.rows)
-        print(df.head(5))
-        print("==> Generation successful!\n")
-
+        generate_data(args.rows)
+        
         if args.test:
-            print("==> Excel file ispection report:")
             inspect_generated_data()
     
     elif args.command == "etl":
