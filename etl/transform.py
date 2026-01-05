@@ -31,6 +31,7 @@ def clean_dimensions(df: pd.DataFrame) -> pd.DataFrame:
     :return: normalized data 
     :rtype: DataFrame
     """
+    df = df.copy()
 
     # Standardize column names
     df.columns = (
@@ -92,6 +93,16 @@ def clean_dimensions(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     return df
+
+def enforce_schema(df: pd.DataFrame, schema: dict) -> pd.DataFrame:
+    df = df.copy()
+
+    for col, dtype in schema.items():
+        if col in df.columns:
+            df[col] = df[col].astype(dtype, errors="ignore")
+    
+    return df
+
 
 def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -157,6 +168,15 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Filter invalid records
     df = df[df["total_sales"] >= 0]
+
+    # Schema enforement
+    schema = {
+        "sale_date": "datetime64[ns]",
+        "quantity": "float",
+        "unit_price": "float",
+        "total_sales": "float"
+    }
+    df = enforce_schema(df, schema)
 
     # validation
     assert df["store"].str.contains(r"\s{2,}").sum() == 0
