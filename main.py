@@ -2,6 +2,7 @@ import argparse
 from etl.etl_pipeline import run_etl
 from etl.profile import show_profile
 from utils.generate_messy_excel_file import (
+    set_seed,
     generate_data, 
     inspect_generated_data
 )
@@ -22,6 +23,12 @@ def main():
         default=10,
         help="Number of rows")
     gen.add_argument(
+        "--seed",
+        type=int,
+        default=1,
+        help="Seed for reproducible randomness"
+    )
+    gen.add_argument(
         "--test",
         action="store_true",
         help="Test generated data in Excel file."
@@ -36,14 +43,16 @@ def main():
         show_profile()
 
     elif args.command == "generate":
+        if args.test:
+            inspect_generated_data()
+        
         if args.rows <= 0:
             raise parser.error("rows must be a positive integer")
         
+        seed = None if args.seed < 0 else args.seed
+        set_seed(seed)
         generate_data(args.rows)
         
-        if args.test:
-            inspect_generated_data()
-    
     elif args.command == "etl":
         run_etl()
     else:

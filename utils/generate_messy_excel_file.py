@@ -12,11 +12,14 @@ from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+def set_seed(seed):
+        random.seed(seed)
+        np.random.seed(seed)
+        Faker.seed(seed)
 
 fake = Faker()
 current_folder = os.path.dirname(__file__)
 parent_folder = os.path.dirname(current_folder)
-
 
 # Configuration
 SHEET_NAME = "SalesData"
@@ -124,7 +127,7 @@ def random_last_updated():
     ])
 
 def generate_data(rows):
-    
+
     # Generate data
     logger.info("Generating random sales data...")
 
