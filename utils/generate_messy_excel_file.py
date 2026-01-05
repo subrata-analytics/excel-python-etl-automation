@@ -8,6 +8,10 @@ from faker import Faker
 from datetime import date, datetime, timedelta
 from openpyxl import load_workbook
 
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 fake = Faker()
 current_folder = os.path.dirname(__file__)
@@ -122,6 +126,8 @@ def random_last_updated():
 def generate_data(rows):
     
     # Generate data
+    logger.info("Generating random sales data...")
+
     data = []
     for _ in range(rows):
         unit_price = random_price()
@@ -149,10 +155,15 @@ def generate_data(rows):
     # Write Excel
     with pd.ExcelWriter(OUTPUT_FILE_PATH, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name=SHEET_NAME)
+    
+    logger.info(df.head(5))
+    logger.info("Data generation successful")
 
     return df
 
 def inspect_generated_data():
+    logger.info("Inspecting generated Excel file...")
+    
     wb = load_workbook(OUTPUT_FILE_PATH)
     ws = wb[SHEET_NAME]
     if SHEET_NAME in wb.sheetnames:

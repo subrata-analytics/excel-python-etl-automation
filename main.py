@@ -1,6 +1,6 @@
 import argparse
 from etl.etl_pipeline import run_etl
-from scripts.generate_messy_excel_file import (
+from utils.generate_messy_excel_file import (
     generate_data, 
     inspect_generated_data
 )
