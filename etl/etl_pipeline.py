@@ -1,16 +1,20 @@
 from etl.extract import extract_sales_data
 from etl.transform import transform_sales_data
 from etl.load import load_sales_data
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def run_etl():
-    print("==> Starting ETL pipline ...")
+    logger.info("Starting ETL pipline ...")
 
+    # Extracting
     df_raw = extract_sales_data()
-    print(f"==> Extracted {len(df_raw)} rows.")
 
+    # Cleaning and transforming
     df_clean = transform_sales_data(df_raw)
-    print(f"==> Transformed to {len(df_clean)} rows.")
-    
+
+    # Loading
     load_sales_data(df_clean)
-    print("==> ETL pipeline completed successfully.")
+    logger.info("ETL pipeline completed successfully.")

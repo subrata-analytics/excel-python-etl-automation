@@ -1,5 +1,9 @@
-import pandas as pd
 import re
+import pandas as pd
+
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 def clean_text_safe(value):
     if pd.isna(value):
@@ -87,6 +91,7 @@ def clean_dimensions(df: pd.DataFrame) -> pd.DataFrame:
         .map(category_map)
     )
 
+    # notes
     df["notes"] = (
         df["notes"]
         .apply(clean_text_safe)
@@ -115,13 +120,18 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
 
+    logger.info("Cleaning and transforming data ...")
+
     # Remove duplicates
+    logger.info("Removing duplicates")
     df.drop_duplicates(inplace=True)
 
     # clean dimensions
+    logger.info("Cleaning dimensions")
     df = clean_dimensions(df)
 
     # Normalize numeric colums
+    logger.info("Normalizing numeric columns")
     numeric_cols = ["quantity", "unit_price", "total_sales"]
     for col in numeric_cols:
         df[col] = pd.to_numeric(
@@ -132,6 +142,7 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
             )
     
     # Drop rows for NULL values in certain columns
+    logger.info("Drop rows for NULL values")
     df = df.dropna(
         subset=[
             "sale_date",
@@ -145,6 +156,7 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # Feature engineering
+    logger.info("Calculating total sales")
     df["total_sales"] = df["quantity"] * df["unit_price"]
     
     # Handle missing values
@@ -152,6 +164,7 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     df["unit_price"] = df["unit_price"].fillna(0)
 
     # Convert data types
+    logger.info("Convert date data types")
     sale_date = pd.to_datetime(
         df["sale_date"],
         errors="coerce",
@@ -161,15 +174,18 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     df["sale_date"] = sale_date
 
     # Derive important date components from sale_date
+    logger.info("Deriving important date components")
     df["sale_year"] = sale_date.dt.year
     df["sale_month"] = sale_date.dt.month
     df["sale_quarter"] = sale_date.dt.quarter
     df["weekday"] = sale_date.dt.day_name()
 
     # Filter invalid records
+    logger.info("Filter invalid total sales")
     df = df[df["total_sales"] >= 0]
 
     # Schema enforement
+    logger.info("Enforcing schema")
     schema = {
         "sale_date": "datetime64[ns]",
         "quantity": "float",
@@ -179,11 +195,13 @@ def transform_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     df = enforce_schema(df, schema)
 
     # validation
+    logger.info("Validating the cleaned data")
     assert df["store"].str.contains(r"\s{2,}").sum() == 0
     assert df["region"].isna().sum() == 0
     assert df["sale_date"].isna().sum() == 0
     assert df["region"].str.isupper().all()
     assert df["category"].str.isupper().all()
+    logger.info("Validation successful!")
 
     return df
 
