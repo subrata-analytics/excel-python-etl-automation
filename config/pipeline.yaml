@@ -1,0 +1,139 @@
+# ============================================
+# Pipeline Configuration
+# ============================================
+
+input:
+  file: data/raw/sales_transactions_10k_2024.xlsx
+  sheet_name: SalesData
+
+output:
+  processed: data/processed/sales_cleaned.csv
+  curated: data/curated/sales_curated.csv
+
+profiling_output:
+  before: data/processed/profile_before.json
+  after: data/processed/profile_after.json
+  quality_score: data/processed/data_quality_score.json
+
+lineage:
+  enabled: true
+  output_file: data/processed/normalization_lineage.csv
+
+log_files:
+  pipeline: logs/pipeline.log
+  anomalies: logs/anomalies.log
+
+# ============================================
+# Column Standardization
+# ============================================
+column_mapping:
+  Sale Date: sale_date
+  Store: store
+  Region: region
+  Product Name: product_name
+  Category: category
+  Unit Price: unit_price
+  Quantity: quantity
+  Total Sales: total_sales
+  Notes: notes
+  Last Update: last_update
+
+# ============================================
+# Duplicate Handling
+# ============================================
+duplicates:
+  drop: true
+  log: true
+
+# ============================================
+# Text Normalization
+# ============================================
+text_cleaning:
+  collapse_whitespace: true
+  remove_special_characters: true
+  strip: true
+
+text_standardization:
+  store: title
+  product_name: title
+  notes: strip
+
+# ============================================
+# Region & Category Normalization
+# ============================================
+use_reference_data: true
+
+# ============================================
+# Numeric Cleaning
+# ============================================
+numeric_cleaning:
+  currency_symbols:
+    - "$"
+    - ","
+  numeric_columns:
+    - quantity
+    - unit_price
+    - total_sales
+
+# ============================================
+# Required Fields (Drop rows if missing)
+# ============================================
+required_columns:
+  - sale_date
+  - category
+  - product_name
+  - region
+  - quantity
+  - unit_price
+
+# ============================================
+# Date Parsing
+# ============================================
+date_parsing:
+  columns:
+    - sale_date
+  formats:
+    - "%Y/%m/%d"
+    - "%Y-%m-%d"
+    - "%m/%d/%Y"
+    - "%d/%b/%Y"
+    - "mixed"
+
+# ============================================
+# Feature Engineering
+# ============================================
+feature_engineering:
+  compute_total_sales: true
+  derive_date_parts: true
+  date_parts:
+    - sale_year
+    - sale_month
+    - sale_quarter
+    - weekday
+
+# ============================================
+# Filtering Rules
+# ============================================
+filters:
+  quantity_greater_than_zero: true
+  total_sales_non_negative: true
+
+# ============================================
+# Schema Enforcement
+# ============================================
+schema:
+  sale_date: datetime64[ns]
+  quantity: float
+  unit_price: float
+  total_sales: float
+
+# ============================================
+# Validation Rules
+# ============================================
+validation:
+  no_double_spaces_in_store: true
+  region_not_null: true
+  sale_date_not_null: true
+  region_uppercase: true
+  category_uppercase: true
+#==================== end ====================
