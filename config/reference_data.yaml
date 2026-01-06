@@ -1,0 +1,82 @@
+# ============================================
+# Canonical Reference Data for Normalization
+# ============================================
+
+stores:
+  canonical:
+    - Store A
+    - Store B
+    - Store C
+    - Store D
+    - Store E
+  variants:
+    Store A:
+      - "store a"
+      - "Store-A"
+      - "STORE-A"
+    Store B:
+      - "store b"
+      - "Store-B"
+      - "STORE-B"
+    Store C:
+      - "store c"
+      - "Store-C"
+      - "STORE-C"
+    Store D:
+      - "store d"
+      - "Store-D"
+      - "STORE-D"
+    Store E:
+      - "store e"
+      - "Store-E"
+      - "STORE-E"
+
+regions:
+  canonical:
+    - EAST
+    - WEST
+    - NORTH
+    - SOUTH
+  variants:
+    EAST:
+      - "east"
+      - "est"
+    WEST:
+      - "west"
+      - "wes"
+    NORTH:
+      - "north"
+      - "nort"
+    SOUTH:
+      - "south"
+      - "sout"
+
+categories:
+  canonical:
+    - ACCESSORIES
+    - ELECTRONICS
+  variants:
+    ACCESSORIES:
+      - "accessories"
+      - "accessory"
+    ELECTRONICS:
+      - "electronics"
+      - "electronic"
+
+product_names:
+  canonical:
+    - Laptop Pro 15
+    - Smartphone X
+    - Tablet Plus
+  variants:
+    Laptop Pro 15:
+      - "Laptop Pro15"
+      - "Laptop Pro - 15"
+      - "LTP Pro 15"
+    Smartphone X:
+      - "Smart phone X"
+      - "Smartphone X"
+      - "Smartfone X"
+    Tablet Plus:
+      - "Tablet+"
+      - "Tablet Plus"
