@@ -1,0 +1,115 @@
+import numpy as np
+import pandas as pd
+from scipy.stats import zscore
+
+
+def profile_data(df: pd.DataFrame, config: dict) -> dict:
+    report = {}
+
+    # Standardize column names
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+    )
+
+    # Extract profile configuration
+    profile_enabled = config.get("profile", {}).get("enabled", True)
+    columns = config.get("columns", df.columns.to_list())
+    metrics_cfg = config.get("metrics", {})
+    outliers_cfg = config.get("outliers", {})
+    quality_cfg = config.get("quality_score", {})
+
+    if not profile_enabled:
+        return {"message": "Profiling disabled in profile.yaml"}
+    
+    # Restrict DF to configured columns (if they exist)
+    df = df[[col for col in columns if col in df.columns]]
+
+    # Analyze metrics
+    report["metrics"] = {}
+    if metrics_cfg.get("missing_values"):
+        report["metrics"]["missign_values"] = df.isna().sum().to_dict()
+        
+    if metrics_cfg.get("missing_percent"):
+        report["metrics"]["missign_percent"] = (
+            df.isna().mean().mul(100).to_dict()
+        )
+    
+    if metrics_cfg.get("unique_values"):
+        report["metrics"]["unique_values"] = df.isna().nunique().to_dict()
+    
+    if metrics_cfg.get("data_types"):
+        report["metrics"]["data_types"] = df.dtypes.astype(str).to_dict()
+    
+    if metrics_cfg.get("numeric_summary"):
+        numeric_cols = df.select_dtypes(include="number").columns
+        report["metrics"]["numeric_summary"] = (
+            df[numeric_cols].describe().to_dict()
+        )
+    
+    if metrics_cfg.get("categorical_distribution"):
+        categorical_cols = df.select_dtypes(include="object").columns
+        report["metrics"]["categorical_distribution"] = {
+            col: df[col].value_counts().to_dict() for col in categorical_cols
+        }
+    
+    if metrics_cfg.get("sample_rows"):
+        n = metrics_cfg.get("sample_rows", 5)
+        report["metrics"]["sample_rows"] = df.head(n).to_dict(orient="records")
+    
+    # Detect outliers
+    outlier_report = {}
+
+    if outliers_cfg.get("enabled", False):
+        method = outliers_cfg.get("method", "zscore")
+        threshold = outliers_cfg.get("threshold", 3)
+        numeric_cols = outliers_cfg.get("numeric_columns", [])
+
+        for col in numeric_cols:
+            if col in df.columns and pd.api.types.is_numeric_dtype(df[col]):
+                if method == "zscore":
+                    z_scores = np.abs(zscore(df[col].dropna()))
+                    outlier_idx = df[col].dropna().index[z_scores > threshold]
+                    outlier_report[col] = {
+                        "count": len(outlier_idx),
+                        "indices": outlier_idx.tolist()
+                    }
+                    
+        report["outliers"] = outlier_report
+
+    # Quality Score
+    if quality_cfg.get("enabled", False):
+        weights = quality_cfg.get("weights", {})
+
+        # Missing ratio
+        missing_ratio = df.isna().mean().mean()
+
+        # Invalid values (negative numeric values)
+        numeric_cols = df.select_dtypes(include="number").columns
+        invalid_ratio = (
+            (df[numeric_cols] < 0).sum().sum() / df[numeric_cols].size
+            if len(numeric_cols) > 0 else 0
+        )
+
+        # Duplicate ratio
+        duplicate_ratio = df.duplicated().mean()
+
+        # Anomaly ratio
+        anomaly_ratio = (
+            sum(v["count"] for v in outlier_report.values()) / len(df)
+            if len(df) > 0 else 0
+        )
+
+        # Weighted score
+        score = (
+            (1 - missing_ratio) * weights.get("missing_values", 0) +
+            (1 - invalid_ratio) * weights.get("invalid_values", 0) +
+            (1 - duplicate_ratio) * weights.get("duplicates", 0) +
+            (1 - anomaly_ratio) * weights.get("anomalies", 0)
+        )
+
+        report["quality_score"] = np.round(score, 4).tolist()
+        
+    return report
