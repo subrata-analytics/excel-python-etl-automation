@@ -1,9 +1,6 @@
 from src.profile import profile_data
-from src.utils.helpers import (
-    get_config, 
-    get_raw_data, 
-    save_profile_report
-)
+from src.extract import get_config, get_raw_data
+from src.utils.helpers import save_profile_report
 
 # Extract configurations
 pipeline_cfg = get_config("config/pipeline.yaml")
