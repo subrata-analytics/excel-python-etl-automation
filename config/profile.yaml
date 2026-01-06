@@ -1,0 +1,44 @@
+# ============================================
+# Profiling Configuration
+# ============================================
+
+profile:
+  enabled: true
+
+columns:
+  - sale_date
+  - store
+  - region
+  - product_name
+  - category
+  - unit_price
+  - quantity
+  - total_sales
+  - notes
+  - last_update
+
+metrics:
+  missing_values: true
+  missing_percent: true
+  unique_values: true
+  data_types: true
+  numeric_summary: true
+  categorical_distribution: true
+  sample_rows: 5
+
+outliers:
+  enabled: true
+  method: zscore
+  threshold: 3
+  numeric_columns:
+    - unit_price
+    - quantity
+    - total_sales
+
+quality_score:
+  enabled: true
+  weights:
+    missing_values: 0.3
+    invalid_values: 0.3
+    duplicates: 0.2
+    anomalies: 0.2
