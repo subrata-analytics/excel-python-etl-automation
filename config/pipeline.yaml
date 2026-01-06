@@ -18,6 +18,14 @@ profiling_output:
 lineage:
   enabled: true
   output_file: data/processed/normalization_lineage.csv
+  track_columns:
+    - store
+    - region
+    - category
+    - product_name
+    - unit_price
+    - quantity
+    - sale_date
 
 log_files:
   pipeline: logs/pipeline.log
