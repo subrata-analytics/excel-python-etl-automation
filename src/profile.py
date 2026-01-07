@@ -3,7 +3,10 @@ import pandas as pd
 from scipy.stats import zscore
 
 
-def profile_data(df: pd.DataFrame, config: dict) -> dict:
+def profile_data(df: pd.DataFrame, config: dict, logger) -> dict:
+
+    logger.info("==> Starting data profiling...")
+
     report = {}
 
     # Standardize column names
@@ -31,33 +34,40 @@ def profile_data(df: pd.DataFrame, config: dict) -> dict:
     report["metrics"] = {}
     if metrics_cfg.get("missing_values"):
         report["metrics"]["missign_values"] = df.isna().sum().to_dict()
+        logger.info("==> Computed missing vlaues")
         
     if metrics_cfg.get("missing_percent"):
         report["metrics"]["missign_percent"] = (
             df.isna().mean().mul(100).to_dict()
         )
+        logger.info("==> Computed missing percentage")
     
     if metrics_cfg.get("unique_values"):
         report["metrics"]["unique_values"] = df.isna().nunique().to_dict()
+        logger.info("==> Computed unique values")
     
     if metrics_cfg.get("data_types"):
         report["metrics"]["data_types"] = df.dtypes.astype(str).to_dict()
+        logger.info("==> Computed data types")
     
     if metrics_cfg.get("numeric_summary"):
         numeric_cols = df.select_dtypes(include="number").columns
         report["metrics"]["numeric_summary"] = (
             df[numeric_cols].describe().to_dict()
         )
+        logger.info("==> Summarized numerical columns")
     
     if metrics_cfg.get("categorical_distribution"):
         categorical_cols = df.select_dtypes(include="object").columns
         report["metrics"]["categorical_distribution"] = {
             col: df[col].value_counts().to_dict() for col in categorical_cols
         }
+        logger.info("==> Summarized categorical data")
     
     if metrics_cfg.get("sample_rows"):
         n = metrics_cfg.get("sample_rows", 5)
         report["metrics"]["sample_rows"] = df.head(n).to_dict(orient="records")
+        logger.info("==> Summarized metrics")
     
     # Detect outliers
     outlier_report = {}
@@ -78,6 +88,7 @@ def profile_data(df: pd.DataFrame, config: dict) -> dict:
                     }
                     
         report["outliers"] = outlier_report
+        logger.info("==> Computed outliers")
 
     # Quality Score
     if quality_cfg.get("enabled", False):
@@ -111,5 +122,7 @@ def profile_data(df: pd.DataFrame, config: dict) -> dict:
         )
 
         report["quality_score"] = np.round(score, 4).tolist()
-        
+        logger.info("==> Computed quality score")
+    
+    logger.info("==> Profiling completed successfully.")
     return report
