@@ -1,6 +1,6 @@
 {
     "metrics": {
-        "missign_values": {
+        "missing_values": {
             "sale_date": 304,
             "store": 0,
             "region": 1134,
@@ -12,7 +12,7 @@
             "notes": 2730,
             "last_update": 946
         },
-        "missign_percent": {
+        "missing_percent": {
             "sale_date": 2.9950738916256157,
             "store": 0.0,
             "region": 11.172413793103448,

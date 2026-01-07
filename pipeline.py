@@ -17,7 +17,7 @@ log_path = pipeline_cfg.get("log_files", {}).get("pipeline")
 profile_before_path = pipeline_cfg.get("profiling_output", {}).get("before")
 
 # Profile logger
-profile_logger = get_logger("profile", log_path)
+profile_logger = get_logger("profile", log_path, log_shell=True)
 
 # Extract raw data
 df_raw = get_raw_data(wb_path, ws_name)
