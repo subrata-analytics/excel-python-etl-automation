@@ -2,7 +2,9 @@ import sys
 import logging
 
 
-def get_logger(name, log_path, log_shell=False, level=logging.INFO):
+def get_logger(name: str, log_path: str, 
+               log_shell: bool = False, 
+               level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(level)
     
