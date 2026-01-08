@@ -34,11 +34,11 @@ def profile_data(df: pd.DataFrame,
     )
 
     # Extract profile configuration
-    profile_enabled = config.get("profile", {}).get("enabled", True)
-    columns = config.get("columns", df.columns.to_list())
-    metrics_cfg = config.get("metrics", {})
-    outliers_cfg = config.get("outliers", {})
-    quality_cfg = config.get("quality_score", {})
+    profile_enabled = config["profile"]["enabled"]
+    columns = config["columns"]
+    metrics_cfg = config["metrics"]
+    outliers_cfg = config["outliers"]
+    quality_cfg = config["quality_score"]
 
     if not profile_enabled:
         return {"message": "Profiling disabled in profile.yaml"}
@@ -48,14 +48,14 @@ def profile_data(df: pd.DataFrame,
 
     # Analyze metrics
     report["metrics"] = {}
-    if metrics_cfg.get("missing_values"):
+    if metrics_cfg["missing_values"]:
         missing_values = df.isna().sum().to_dict()
         report["metrics"]["missing_values"] = missing_values
         logger.info(
             f"Computed missing vlaues: {len(missing_values) > 0}"
         )
         
-    if metrics_cfg.get("missing_percent"):
+    if metrics_cfg["missing_percent"]:
         missing_percent = df.isna().mean().mul(100).to_dict()
         report["metrics"]["missing_percent"] = (
             missing_percent
@@ -64,40 +64,40 @@ def profile_data(df: pd.DataFrame,
             f"Computed missing percentage: {len(missing_percent) > 0}"
         )
     
-    if metrics_cfg.get("unique_values"):
+    if metrics_cfg["unique_values"]:
         report["metrics"]["unique_values"] = df.isna().nunique().to_dict()
         logger.info("Computed unique values")
     
-    if metrics_cfg.get("data_types"):
+    if metrics_cfg["data_types"]:
         report["metrics"]["data_types"] = df.dtypes.astype(str).to_dict()
         logger.info("Computed data types")
     
-    if metrics_cfg.get("numeric_summary"):
+    if metrics_cfg["numeric_summary"]:
         numeric_cols = df.select_dtypes(include="number").columns
         report["metrics"]["numeric_summary"] = (
             df[numeric_cols].describe().to_dict()
         )
         logger.info("Summarized numerical columns")
     
-    if metrics_cfg.get("categorical_distribution"):
+    if metrics_cfg["categorical_distribution"]:
         categorical_cols = df.select_dtypes(include="object").columns
         report["metrics"]["categorical_distribution"] = {
             col: df[col].value_counts().to_dict() for col in categorical_cols
         }
         logger.info("Summarized categorical data")
     
-    if metrics_cfg.get("sample_rows"):
-        n = metrics_cfg.get("sample_rows", 5)
+    if metrics_cfg["sample_rows"]:
+        n = metrics_cfg["sample_rows"]
         report["metrics"]["sample_rows"] = df.head(n).to_dict(orient="records")
         logger.info("Summarized metrics")
     
     # Detect outliers
     outlier_report = {}
 
-    if outliers_cfg.get("enabled", False):
-        method = outliers_cfg.get("method", "zscore")
-        threshold = outliers_cfg.get("threshold", 3)
-        numeric_cols = outliers_cfg.get("numeric_columns", [])
+    if outliers_cfg["enabled"]:
+        method = outliers_cfg["method"]
+        threshold = outliers_cfg["threshold"]
+        numeric_cols = outliers_cfg["numeric_columns"]
 
         for col in numeric_cols:
             if col in df.columns and pd.api.types.is_numeric_dtype(df[col]):
@@ -113,8 +113,8 @@ def profile_data(df: pd.DataFrame,
         logger.info("Computed outliers")
 
     # Quality Score
-    if quality_cfg.get("enabled", False):
-        weights = quality_cfg.get("weights", {})
+    if quality_cfg["enabled"]:
+        weights = quality_cfg["weights"]
 
         # Missing ratio
         missing_ratio = df.isna().mean().mean()
@@ -137,10 +137,10 @@ def profile_data(df: pd.DataFrame,
 
         # Weighted score
         score = (
-            (1 - missing_ratio) * weights.get("missing_values", 0) +
-            (1 - invalid_ratio) * weights.get("invalid_values", 0) +
-            (1 - duplicate_ratio) * weights.get("duplicates", 0) +
-            (1 - anomaly_ratio) * weights.get("anomalies", 0)
+            (1 - missing_ratio) * weights["missing_values"] +
+            (1 - invalid_ratio) * weights["invalid_values"] +
+            (1 - duplicate_ratio) * weights["duplicates"] +
+            (1 - anomaly_ratio) * weights["anomalies"]
         )
 
         report["quality_score"] = np.round(score, 4).tolist()
