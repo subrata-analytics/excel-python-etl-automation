@@ -7,6 +7,20 @@ def get_logger(name: str,
                log_path: Optional[str] = None, 
                log_shell: bool = True, 
                level: int = logging.INFO) -> logging.Logger:
+    """
+    A general logger for project-wide logging
+    
+    :param name: Name of the script
+    :type name: str
+    :param log_path: Path of the log file -> None for non-persistent
+    :type log_path: Optional[str]
+    :param log_shell: Log in the standard output conditionally
+    :type log_shell: bool
+    :param level: Level of the logs -> INFO/WARNING/ERROR 
+    :type level: int
+    :return: logger
+    :rtype: Logger
+    """
     logger = logging.getLogger(name)
     logger.setLevel(level)
     
