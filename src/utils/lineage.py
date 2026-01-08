@@ -42,7 +42,7 @@ class LineageWriter:
 
 
 def log_lineage(
-        lineage_write: LineageWriter,
+        lineage_writer: LineageWriter,
         row_id: int,
         column: str,
         old_value: Any,
@@ -52,7 +52,7 @@ def log_lineage(
     if old_value == new_value:
         return
     
-    lineage_write.write({
+    lineage_writer.write({
         "row_id": int(row_id),
         "column": column,
         "old_value": old_value,
