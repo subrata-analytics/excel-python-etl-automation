@@ -18,13 +18,13 @@ profile_before_path = pipeline_cfg["profiling_output"]["before"]
 profile_after_path = pipeline_cfg["profiling_output"]["after"]
 
 # Profile logger
-profile_logger = get_logger("profile", log_path, log_shell=False)
+profile_logger = get_logger("profile", log_path, log_shell=True)
 
 # Extract raw data
 df_raw = get_raw_data(workbook_path, worksheet_name)
 
 # Get profiling report
-report = profile_data(df_raw, profile_cfg, profile_logger)
+report = profile_data(df_raw, pipeline_cfg, profile_cfg, profile_logger)
 
 # Save profiling report of the raw data
 save_profile_report(report, profile_before_path)

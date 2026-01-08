@@ -5,7 +5,8 @@ from scipy.stats import zscore
 
 
 def profile_data(df: pd.DataFrame,
-                 config: dict, 
+                 pipeline_config: dict,
+                 profile_config: dict,
                  logger: Logger) -> dict:
     """
     Profiles data in the df based on the profiling 
@@ -26,19 +27,23 @@ def profile_data(df: pd.DataFrame,
     report = {}
 
     # Standardize column names
-    df.columns = (
-        df.columns
-        .str.strip()
-        .str.lower()
-        .str.replace(" ", "_")
-    )
+    # df.columns = (
+    #     df.columns
+    #     .str.strip()
+    #     .str.lower()
+    #     .str.replace(" ", "_")
+    # )
+
+    # Map columns to configured columns
+    col_map = pipeline_config["column_mapping"]
+    df = df.rename(columns=col_map)
 
     # Extract profile configuration
-    profile_enabled = config["profile"]["enabled"]
-    columns = config["columns"]
-    metrics_cfg = config["metrics"]
-    outliers_cfg = config["outliers"]
-    quality_cfg = config["quality_score"]
+    profile_enabled = profile_config["profile"]["enabled"]
+    columns = profile_config["columns"]
+    metrics_cfg = profile_config["metrics"]
+    outliers_cfg = profile_config["outliers"]
+    quality_cfg = profile_config["quality_score"]
 
     if not profile_enabled:
         return {"message": "Profiling disabled in profile.yaml"}
