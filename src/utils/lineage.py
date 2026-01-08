@@ -39,3 +39,24 @@ class LineageWriter:
             index=False
         )
         self.buffer.clear()
+
+
+def log_lineage(
+        lineage_write: LineageWriter,
+        row_id: int,
+        column: str,
+        old_value: Any,
+        new_value: Any,
+        rule: str
+):
+    if old_value == new_value:
+        return
+    
+    lineage_write.write({
+        "row_id": int(row_id),
+        "column": column,
+        "old_value": old_value,
+        "new_value": new_value,
+        "rule": rule,
+        "timestamp": datetime.now(timezone.utc)
+    })
