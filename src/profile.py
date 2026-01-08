@@ -37,6 +37,7 @@ def profile_data(df: pd.DataFrame,
     # Map columns to configured columns
     col_map = pipeline_cfg["column_mapping"]
     df = df.rename(columns=col_map)
+    logger.info("Normalized column names")
 
     # Extract profile configuration
     profile_enabled = profile_cfg["profile"]["enabled"]
