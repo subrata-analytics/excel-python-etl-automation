@@ -9,18 +9,19 @@ from src.utils.logger import get_logger
 pipeline_cfg = get_config("config/pipeline.yaml")
 profile_cfg = get_config("config/profile.yaml")
 
-wb_path = pipeline_cfg.get("input", {}).get("file") # Workbook path
-ws_name = pipeline_cfg.get("input", {}).get("sheet_name") # Worksheet name
+workbook_path = pipeline_cfg["input"]["file"]
+worksheet_name = pipeline_cfg["input"]["sheet_name"]
 
-log_path = pipeline_cfg.get("log_files", {}).get("pipeline")
+log_path = pipeline_cfg["log_files"]["pipeline"]
 
-profile_before_path = pipeline_cfg.get("profiling_output", {}).get("before")
+profile_before_path = pipeline_cfg["profiling_output"]["before"]
+profile_after_path = pipeline_cfg["profiling_output"]["after"]
 
 # Profile logger
 profile_logger = get_logger("profile", log_path, log_shell=False)
 
 # Extract raw data
-df_raw = get_raw_data(wb_path, ws_name)
+df_raw = get_raw_data(workbook_path, worksheet_name)
 
 # Get profiling report
 report = profile_data(df_raw, profile_cfg, profile_logger)
