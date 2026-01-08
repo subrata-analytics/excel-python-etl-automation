@@ -45,6 +45,7 @@ def profile_data(df: pd.DataFrame,
     metrics_cfg = profile_cfg["metrics"]
     outliers_cfg = profile_cfg["outliers"]
     quality_cfg = profile_cfg["quality_score"]
+    logger.info("Extracted profile configuration")
 
     if not profile_enabled:
         return {"message": "Profiling disabled in profile.yaml"}
