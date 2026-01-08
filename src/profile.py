@@ -1,9 +1,12 @@
 import numpy as np
 import pandas as pd
+import logging
 from scipy.stats import zscore
 
 
-def profile_data(df: pd.DataFrame, config: dict, logger) -> dict:
+def profile_data(df: pd.DataFrame, 
+                 config: dict, 
+                 logger: logging.Logger) -> dict:
 
     logger.info("Starting data profiling...")
 
