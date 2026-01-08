@@ -1,9 +1,11 @@
 import sys
 import logging
+from typing import Optional
 
 
-def get_logger(name: str, log_path: str, 
-               log_shell: bool = False, 
+def get_logger(name: str, 
+               log_path: Optional[str] = None, 
+               log_shell: bool = True, 
                level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(level)
@@ -12,13 +14,14 @@ def get_logger(name: str, log_path: str,
         return logger
     
     # file handler
-    file_handler = logging.FileHandler(log_path)
-    file_handler.setLevel(logging.INFO)
-    file_formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(name)s | ==> %(message)s"
-    )
-    file_handler.setFormatter(file_formatter)
-    logger.addHandler(file_handler)
+    if log_path:
+        file_handler = logging.FileHandler(log_path)
+        file_handler.setLevel(logging.INFO)
+        file_formatter = logging.Formatter(
+            "%(asctime)s | %(levelname)s | %(name)s | ==> %(message)s"
+        )
+        file_handler.setFormatter(file_formatter)
+        logger.addHandler(file_handler)
 
     # console handler
     console_handler = logging.StreamHandler(sys.stdout)

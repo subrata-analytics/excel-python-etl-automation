@@ -1,22 +1,11 @@
-2026-01-07 18:37:57,196 | INFO | profile | ==> Starting data profiling...
-2026-01-07 18:37:57,199 | INFO | profile | ==> Computed missing vlaues: True
-2026-01-07 18:37:57,200 | INFO | profile | ==> Computed missing percentage: True
-2026-01-07 18:37:57,202 | INFO | profile | ==> Computed unique values
-2026-01-07 18:37:57,202 | INFO | profile | ==> Computed data types
-2026-01-07 18:37:57,206 | INFO | profile | ==> Summarized numerical columns
-2026-01-07 18:37:57,211 | INFO | profile | ==> Summarized categorical data
-2026-01-07 18:37:57,212 | INFO | profile | ==> Summarized metrics
-2026-01-07 18:37:57,213 | INFO | profile | ==> Computed outliers
-2026-01-07 18:37:57,218 | INFO | profile | ==> Computed quality score
-2026-01-07 18:37:57,218 | INFO | profile | ==> Profiling completed successfully.
-2026-01-07 18:52:24,881 | INFO | profile | ==> Starting data profiling...
-2026-01-07 18:52:24,885 | INFO | profile | ==> Computed missing vlaues: True
-2026-01-07 18:52:24,887 | INFO | profile | ==> Computed missing percentage: True
-2026-01-07 18:52:24,889 | INFO | profile | ==> Computed unique values
-2026-01-07 18:52:24,890 | INFO | profile | ==> Computed data types
-2026-01-07 18:52:24,893 | INFO | profile | ==> Summarized numerical columns
-2026-01-07 18:52:24,900 | INFO | profile | ==> Summarized categorical data
-2026-01-07 18:52:24,901 | INFO | profile | ==> Summarized metrics
-2026-01-07 18:52:24,902 | INFO | profile | ==> Computed outliers
-2026-01-07 18:52:24,907 | INFO | profile | ==> Computed quality score
-2026-01-07 18:52:24,908 | INFO | profile | ==> Profiling completed successfully.
+2026-01-07 19:02:23,172 | INFO | profile | ==> Starting data profiling...
+2026-01-07 19:02:23,175 | INFO | profile | ==> Computed missing vlaues: True
+2026-01-07 19:02:23,177 | INFO | profile | ==> Computed missing percentage: True
+2026-01-07 19:02:23,179 | INFO | profile | ==> Computed unique values
+2026-01-07 19:02:23,179 | INFO | profile | ==> Computed data types
+2026-01-07 19:02:23,184 | INFO | profile | ==> Summarized numerical columns
+2026-01-07 19:02:23,190 | INFO | profile | ==> Summarized categorical data
+2026-01-07 19:02:23,191 | INFO | profile | ==> Summarized metrics
+2026-01-07 19:02:23,192 | INFO | profile | ==> Computed outliers
+2026-01-07 19:02:23,198 | INFO | profile | ==> Computed quality score
+2026-01-07 19:02:23,198 | INFO | profile | ==> Profiling completed successfully.
