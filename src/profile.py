@@ -5,7 +5,7 @@ from scipy.stats import zscore
 
 
 def profile_data(df: pd.DataFrame,
-                 pipeline_config: dict,
+                 pipeline_cfg: dict,
                  profile_config: dict,
                  logger: Logger) -> dict:
     """
@@ -35,7 +35,7 @@ def profile_data(df: pd.DataFrame,
     # )
 
     # Map columns to configured columns
-    col_map = pipeline_config["column_mapping"]
+    col_map = pipeline_cfg["column_mapping"]
     df = df.rename(columns=col_map)
 
     # Extract profile configuration
