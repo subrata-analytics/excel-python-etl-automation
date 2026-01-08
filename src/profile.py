@@ -7,6 +7,19 @@ from scipy.stats import zscore
 def profile_data(df: pd.DataFrame, 
                  config: dict, 
                  logger: logging.Logger) -> dict:
+    """
+    Profiles data in the df based on the profiling 
+    configuration config and returns a report
+    
+    :param df: Data as a dataframe
+    :type df: pd.DataFrame
+    :param config: Profiling configuration
+    :type config: dict
+    :param logger: Logger for profiling
+    :type logger: logging.Logger
+    :return: Report on profiling
+    :rtype: dict[Any, Any]
+    """
 
     logger.info("Starting data profiling...")
 
