@@ -2,7 +2,7 @@
 # Helper functions
 # =============================================================================
 import json
-import logging
+from logging import Logger
 import pandas as pd
 from typing import Any, Dict, List
 from src.utils.lineage import LineageWriter, log_lineage
@@ -14,11 +14,11 @@ def save_profile_report(report: dict, json_path: str):
 
 
 def rename_columns(
-    df: pd.DataFrame,
-    column_mapping: Dict[str, str],
-    lineage_writer: LineageWriter,
-    logger: logging.Logger,
-) -> None:
+        df: pd.DataFrame,
+        column_mapping: Dict[str, str],
+        lineage_writer: LineageWriter,
+        logger: Logger,
+    ) -> None:
     """
     Rename columns according to column_mapping and log column-rename lineage.
 
@@ -46,11 +46,11 @@ def rename_columns(
 
 
 def drop_duplicate_rows(
-    df: pd.DataFrame,
-    duplicates_cfg: Dict[str, Any],
-    lineage_writer: LineageWriter,
-    logger: logging.Logger,
-) -> None:
+        df: pd.DataFrame,
+        duplicates_cfg: Dict[str, Any],
+        lineage_writer: LineageWriter,
+        logger: Logger,
+    ) -> None:
     """
     Drop duplicate rows and log drop-row lineage for removed rows.
     """
