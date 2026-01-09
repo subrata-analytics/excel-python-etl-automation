@@ -56,25 +56,52 @@ duplicates:
 # ============================================
 # Text Normalization
 # ============================================
-text_cleaning:
-  collapse_whitespace: true
-  remove_special_characters: true
-  strip: true
-
-text_standardization:
-  store: title
-  product_name: title
-  notes: strip
+text_normalization:
+  columns:
+    - store
+    - region
+    - product_name
+    - category
+    - notes
+  cleaning:
+    collapse_whitespace: true
+    remove_special_characters: true
+    strip: true
+    log: true
+  standardization:
+    store: title
+    product_name: title
+    notes: strip
+    log: true
 
 # ============================================
 # Region & Category Normalization
 # ============================================
-use_reference_data: true
+use_reference_data: 
+  enabled: true
+  region_map:
+    east: EAST
+    est: EAST
+    nort: NORTH
+    north: NORTH
+    sout: SOUTH
+    south: SOUTH
+    wes: WEST
+    west: WEST
+  category_map:
+    accessories: ACCESSORIES
+    electronics: ELECTRONICS
+    accessory: ACCESSORIES
+    electronic: ELECTRONICS
+
 
 # ============================================
 # Numeric Cleaning
 # ============================================
 numeric_cleaning:
+  currency_columns:
+    - unit_price
+    - total_sales
   currency_symbols:
     - "$"
     - ","
@@ -82,17 +109,20 @@ numeric_cleaning:
     - quantity
     - unit_price
     - total_sales
+  log: true
 
 # ============================================
 # Required Fields (Drop rows if missing)
 # ============================================
-required_columns:
-  - sale_date
-  - category
-  - product_name
-  - region
-  - quantity
-  - unit_price
+drop_missing:
+  required_columns:
+    - sale_date
+    - category
+    - product_name
+    - region
+    - quantity
+    - unit_price
+  log: true
 
 # ============================================
 # Date Parsing
@@ -100,6 +130,7 @@ required_columns:
 date_parsing:
   columns:
     - sale_date
+  log: true
 
 # ============================================
 # Feature Engineering
@@ -112,6 +143,7 @@ feature_engineering:
     - sale_month
     - sale_quarter
     - weekday
+  log: true
 
 # ============================================
 # Filtering Rules
@@ -119,6 +151,7 @@ feature_engineering:
 filters:
   quantity_greater_than_zero: true
   total_sales_non_negative: true
+  log: true
 
 # ============================================
 # Schema Enforcement
@@ -128,6 +161,7 @@ schema:
   quantity: float
   unit_price: float
   total_sales: float
+  log: true
 
 # ============================================
 # Validation Rules
