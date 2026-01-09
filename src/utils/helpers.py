@@ -125,6 +125,56 @@ def drop_empty_rows(
     return df
 
 
+def drop_rows_missing_required(
+        df: pd.DataFrame,
+        drop_missing_cfg: Dict[str, Any],
+        lineage_writer: LineageWriter,
+        logger: Logger,
+    ) -> pd.DataFrame:
+    """
+    Drop rows missing required columns, log drop-row lineage.
+    """
+    required_columns: List[str] = drop_missing_cfg.get("required_columns", [])
+    log_enabled = drop_missing_cfg.get("log", False)
+
+    df = df.copy()
+
+    if not required_columns:
+        return df
+
+    logger.info(
+        "Dropping rows with missing required columns: %s",
+        ", ".join(required_columns),
+    )
+
+    missing_mask = df[required_columns].isna().any(axis=1)
+
+    if missing_mask.any():
+        dropped = df.loc[missing_mask, ["__row_id__"]].copy()
+        # df = df[~missing_mask]
+        # another way of doing the above
+        df.drop(index=dropped.index, inplace=True)
+
+
+        if log_enabled:
+            for _, row in dropped.iterrows():
+                row_id = int(row["__row_id__"])
+                log_lineage(
+                    lineage_writer=lineage_writer,
+                    row_id=row_id,
+                    column=",".join(required_columns),
+                    old_value="",
+                    new_value="",
+                    rule="drop_missing_required",
+                )
+
+        logger.info("Dropped %d rows due to missing required fields.", int(missing_mask.sum()))
+    else:
+        logger.info("No rows with missing required fields.")
+    
+    return df
+
+
 
 def clean_text(
         df: pd.DataFrame,
@@ -369,5 +419,3 @@ def _log_numeric_changes_for_column(
             new_value=new_value,
             rule=rule,
         )
-
-
