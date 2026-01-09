@@ -369,16 +369,18 @@ def clean_numeric_values(
     log_enabled = numeric_cleaning_cfg.get("log", False)
 
     # Clean currency columns: strip symbols and commas
-    for col in currency_columns:
+    for col in numeric_columns:
         if col not in df.columns:
             continue
 
         original_values = df[col].copy()
         series = df[col].astype("string")
 
-        for sym in currency_symbols:
-            series = series.str.replace(sym, "", regex=False)
-        # Also handle standard thousands separator
+        if col in currency_columns:
+            for sym in currency_symbols:
+                series = series.str.replace(sym, "", regex=False)
+        
+        # Also handle standard thousands separator in all numeric columns
         series = series.str.replace(",", "", regex=False)
 
         # Attempt conversion to float; invalid becomes NaN
@@ -399,13 +401,13 @@ def clean_numeric_values(
     return df
 
 def _log_numeric_changes_for_column(
-    df: pd.DataFrame,
-    original_series: pd.Series,
-    cleaned_series: pd.Series,
-    column: str,
-    lineage_writer: LineageWriter,
-    rule: str,
-) -> None:
+        df: pd.DataFrame,
+        original_series: pd.Series,
+        cleaned_series: pd.Series,
+        column: str,
+        lineage_writer: LineageWriter,
+        rule: str,
+    ) -> None:
     """
     For a given column, log lineage for rows where the value actually changed.
     """
@@ -465,3 +467,4 @@ def parse_date(
             )
     
     return df
+
