@@ -17,8 +17,8 @@ def rename_columns(
         df: pd.DataFrame,
         column_mapping: Dict[str, str],
         lineage_writer: LineageWriter,
-        logger: Logger,
-    ) -> None:
+        logger: Logger
+        ) -> None:
     """
     Rename columns according to column_mapping and log column-rename lineage.
 
@@ -49,8 +49,8 @@ def drop_duplicate_rows(
         df: pd.DataFrame,
         duplicates_cfg: Dict[str, Any],
         lineage_writer: LineageWriter,
-        logger: Logger,
-    ) -> None:
+        logger: Logger
+        ) -> None:
     """
     Drop duplicate rows and log drop-row lineage for removed rows.
     """
@@ -81,3 +81,40 @@ def drop_duplicate_rows(
     else:
         logger.info("No duplicate rows found.")
 
+
+def clean_text(
+        df: pd.DataFrame,
+        text_normalizing_cfg: Dict[str, Any],
+        logger: Logger
+        ) -> None:
+    """
+    Apply text cleaning operations: collapse whitespace, 
+    remove special characters, strip. Applies to all object columns.
+    """
+    logger.info("Applying text cleaning.")
+
+    text_cols = text_normalizing_cfg.get("columns", [])
+    text_cleaning_cfg = text_normalizing_cfg.get("cleaning", {})
+
+    collapse_ws = text_cleaning_cfg.get("collapse_whitespace", False)
+    remove_special = text_cleaning_cfg.get("remove_special_characters", False)
+    strip = text_cleaning_cfg.get("strip", False)
+
+
+    for col in text_cols:
+        if col in df.columns:
+            series = df[col].astype("string")
+
+            if strip:
+                series = series.str.strip()
+
+            if collapse_ws:
+                series = series.str.replace(r"\s+", " ", regex=True)
+
+            if remove_special:
+                # Keep letters, numbers, basic punctuation, and spaces
+                series = series.str.replace(r"[^\w\s\.\-/,]", "", regex=True)
+
+            df[col] = series
+    
+    logger.info("Applied text cleaning.")
