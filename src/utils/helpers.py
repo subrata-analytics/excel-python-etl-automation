@@ -19,7 +19,7 @@ def rename_columns(
         column_mapping: Dict[str, str],
         lineage_writer: LineageWriter,
         logger: Logger
-        ) -> None:
+        ) -> pd.DataFrame:
     """
     Rename columns according to column_mapping and log column-rename lineage.
 
@@ -30,6 +30,8 @@ def rename_columns(
     - rule = "column_rename"
     """
     logger.info("Renaming columns.")
+
+    df = df.copy()
 
     for old_col, new_col in column_mapping.items():
         if old_col in df.columns and old_col != new_col:
@@ -44,6 +46,8 @@ def rename_columns(
             )
 
     df.rename(columns=column_mapping, inplace=True)
+
+    return df
 
 
 def drop_duplicate_rows(
@@ -180,12 +184,14 @@ def clean_text(
         df: pd.DataFrame,
         text_cleaning_cfg: Dict[str, Any],
         logger: Logger
-        ) -> None:
+        ) -> pd.DataFrame:
     """
     Apply text cleaning operations: collapse whitespace, 
     remove special characters, strip. Applies to all object columns.
     """
     logger.info("Applying text cleaning.")
+
+    df = df.copy()
 
     text_cols = text_cleaning_cfg.get("columns", [])
     text_cleaning_cfg = text_cleaning_cfg.get("cleaning", {})
@@ -212,19 +218,23 @@ def clean_text(
             df[col] = series
     
         if log_enabled:
-            logger.info("Applied text cleaning.")
+            logger.info("Applied text cleaning in {col}.")
+    
+    return df
 
 
 def standardize_text(
         df: pd.DataFrame,
         text_std_cfg: Dict[str, Any],
         logger: Logger,
-    ) -> None:
+    ) -> pd.DataFrame:
     """
     Apply text standardization based on config keys (e.g., title, strip).
     Only for explicitly configured columns.
     """
     logger.info("Applying text standardization.")
+
+    df = df.copy()
 
     log_enabled = text_std_cfg.get("log", False)
 
@@ -251,6 +261,8 @@ def standardize_text(
 
         if log_enabled:
             logger.debug(f"Standardized column {col} with rule {rule}.")
+        
+    return df
 
 
 def normalize_with_reference_data(
@@ -258,16 +270,18 @@ def normalize_with_reference_data(
         ref_cfg: Dict[str, Any],
         lineage_writer: LineageWriter,
         logger: Logger,
-    ) -> None:
+    ) -> pd.DataFrame:
     """
     Normalize region and category using reference maps.
     Log lineage when values change.
     """
 
+    df = df.copy()
+
     enabled = ref_cfg.get("enabled", False)
     if not enabled:
         logger.info("Reference normalization disabled.")
-        return
+        return df
 
     region_map = ref_cfg.get("region_map", {})
     category_map = ref_cfg.get("category_map", {})
@@ -331,6 +345,8 @@ def normalize_with_reference_data(
                 )
 
     logger.info("Applied reference-based normalization.")
+
+    return df
 
 
 def clean_numeric_values(
