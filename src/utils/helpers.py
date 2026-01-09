@@ -84,7 +84,7 @@ def drop_duplicate_rows(
 
 def clean_text(
         df: pd.DataFrame,
-        text_normalizing_cfg: Dict[str, Any],
+        text_cleaning_cfg: Dict[str, Any],
         logger: Logger
         ) -> None:
     """
@@ -93,8 +93,8 @@ def clean_text(
     """
     logger.info("Applying text cleaning.")
 
-    text_cols = text_normalizing_cfg.get("columns", [])
-    text_cleaning_cfg = text_normalizing_cfg.get("cleaning", {})
+    text_cols = text_cleaning_cfg.get("columns", [])
+    text_cleaning_cfg = text_cleaning_cfg.get("cleaning", {})
 
     collapse_ws = text_cleaning_cfg.get("collapse_whitespace", False)
     remove_special = text_cleaning_cfg.get("remove_special_characters", False)
