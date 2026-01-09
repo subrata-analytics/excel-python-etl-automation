@@ -70,10 +70,10 @@ text_cleaning:
     log: true
 
 text_standardization:
-    store: title
-    product_name: title
-    notes: strip
-    log: true
+  store: title
+  product_name: title
+  notes: strip
+  log: true
 
 # ============================================
 # Region & Category Normalization
