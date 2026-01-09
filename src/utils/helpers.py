@@ -87,6 +87,45 @@ def drop_duplicate_rows(
     return df
 
 
+def drop_empty_rows(
+        df: pd.DataFrame, 
+        empty_rows_cfg: Dict[str, Any],
+        lineage_writer: LineageWriter, 
+        logger: Logger
+        ) -> pd.DataFrame:
+    """
+    Drop empty rows and log for removed rows.
+    """
+    log_enabled = empty_rows_cfg.get("log", False)
+    logger.info("Dropping empty rows.")
+
+    df = df.copy()
+
+    # Use all columns except internal __row_id__ for empty detection
+    cols_for_empty = [col for col in df.columns if col != "__row_id__"]
+    empty_mask = df[cols_for_empty].isna().all(axis=1)
+
+    if empty_mask.any():
+        dropped = df.loc[empty_mask, ["__row_id__"]].copy()
+        df = df[~empty_mask]
+        if log_enabled:
+            for  _, row in dropped.iterrows():
+                row_id = int(row["__row_id__"])
+                log_lineage(
+                    lineage_writer=lineage_writer,
+                    row_id=row_id,
+                    column="all",
+                    old_value="",
+                    new_value="",
+                    rule="drop_empty",
+                )
+
+            logger.info(f"Dropped {int(empty_mask.sum())} empty rows.")
+
+    return df
+
+
+
 def clean_text(
         df: pd.DataFrame,
         text_cleaning_cfg: Dict[str, Any],
