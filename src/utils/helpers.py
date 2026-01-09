@@ -95,6 +95,7 @@ def clean_text(
 
     text_cols = text_cleaning_cfg.get("columns", [])
     text_cleaning_cfg = text_cleaning_cfg.get("cleaning", {})
+    log_enabled = text_cleaning_cfg.get("log", False)
 
     collapse_ws = text_cleaning_cfg.get("collapse_whitespace", False)
     remove_special = text_cleaning_cfg.get("remove_special_characters", False)
@@ -117,4 +118,6 @@ def clean_text(
 
             df[col] = series
     
-    logger.info("Applied text cleaning.")
+        if log_enabled:
+            logger.info("Applied text cleaning.")
+
