@@ -121,3 +121,40 @@ def clean_text(
         if log_enabled:
             logger.info("Applied text cleaning.")
 
+
+def standardize_text(
+        df: pd.DataFrame,
+        text_std_cfg: Dict[str, Any],
+        logger: Logger,
+    ) -> None:
+    """
+    Apply text standardization based on config keys (e.g., title, strip).
+    Only for explicitly configured columns.
+    """
+    logger.info("Applying text standardization.")
+
+    log_enabled = text_std_cfg.get("log", False)
+
+    # We don't want to treat 'log' as a column rule
+    column_rules = {k: v for k, v in text_std_cfg.items() if k != "log"}
+
+    for col, rule in column_rules.items():
+        if col not in df.columns:
+            continue
+
+        series = df[col].astype("string")
+
+        match rule:
+            case "title":
+                series = series.str.title()
+            case "upper":
+                series = series.str.upper()
+            case "lower":
+                series = series.str.lower()
+            case "strip":
+                series = series.str.strip()
+
+        df[col] = series
+
+        if log_enabled:
+            logger.debug(f"Standardized column {col} with rule {rule}.")
