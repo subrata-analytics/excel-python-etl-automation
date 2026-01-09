@@ -51,12 +51,14 @@ def drop_duplicate_rows(
         duplicates_cfg: Dict[str, Any],
         lineage_writer: LineageWriter,
         logger: Logger
-        ) -> None:
+        ) -> pd.DataFrame:
     """
-    Drop duplicate rows and log drop-row lineage for removed rows.
+    Drop duplicate rows and log for removed rows.
     """
     log_enabled = duplicates_cfg.get("log", False)
     logger.info("Dropping duplicate rows.")
+
+    df = df.copy()
 
     # Use all columns except internal __row_id__ for duplicate detection
     cols_for_dupes = [col for col in df.columns if col != "__row_id__"]
@@ -72,7 +74,7 @@ def drop_duplicate_rows(
                 log_lineage(
                     lineage_writer=lineage_writer,
                     row_id=row_id,
-                    column="__all__",
+                    column="all",
                     old_value=None,
                     new_value=None,
                     rule="drop_duplicates",
@@ -81,6 +83,8 @@ def drop_duplicate_rows(
         logger.info(f"Dropped {int(dup_mask.sum())} duplicate rows.", )
     else:
         logger.info("No duplicate rows found.")
+    
+    return df
 
 
 def clean_text(
@@ -101,7 +105,6 @@ def clean_text(
     collapse_ws = text_cleaning_cfg.get("collapse_whitespace", False)
     remove_special = text_cleaning_cfg.get("remove_special_characters", False)
     strip = text_cleaning_cfg.get("strip", False)
-
 
     for col in text_cols:
         if col in df.columns:
