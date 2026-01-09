@@ -56,7 +56,7 @@ duplicates:
 # ============================================
 # Text Normalization
 # ============================================
-text_normalization:
+text_cleaning:
   columns:
     - store
     - region
@@ -68,7 +68,8 @@ text_normalization:
     remove_special_characters: true
     strip: true
     log: true
-  standardization:
+
+text_standardization:
     store: title
     product_name: title
     notes: strip
