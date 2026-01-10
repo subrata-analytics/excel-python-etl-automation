@@ -98,7 +98,11 @@ def profile_data(df: pd.DataFrame,
     
     if metrics_cfg["sample_rows"]:
         n = metrics_cfg["sample_rows"]
-        report["metrics"]["sample_rows"] = df.head(n).to_dict(orient="records")
+        sample_rows = [
+            {k: str(v) for k, v in row.items()} 
+            for row in df.head(n).to_dict(orient="records")
+        ]
+        report["metrics"]["sample_rows"] = sample_rows
         logger.info("Summarized metrics")
     
     # Detect outliers
