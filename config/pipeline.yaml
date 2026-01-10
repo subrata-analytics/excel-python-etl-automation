@@ -54,6 +54,13 @@ duplicates:
   log: true
 
 # ============================================
+# Empty Rows Handling
+# ============================================
+empty_rows:
+  drop: true
+  log: true
+
+# ============================================
 # Text Normalization
 # ============================================
 text_cleaning:
@@ -94,7 +101,6 @@ use_reference_data:
     electronics: ELECTRONICS
     accessory: ACCESSORIES
     electronic: ELECTRONICS
-
 
 # ============================================
 # Numeric Cleaning
