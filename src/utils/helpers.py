@@ -530,7 +530,6 @@ def filters_with_lineage(
     if not (quantity_gt_zero or total_sales_non_negative):
         return df
 
-    initial_count = len(df)
     keep_mask = pd.Series(True, index=df.index)
 
     if quantity_gt_zero and "quantity" in df.columns:
@@ -556,13 +555,12 @@ def filters_with_lineage(
                     new_value="N/A",
                     rule="filters",
                 )
-
+        
         logger.info(
-            "Applied filters. Dropped %d rows; remaining %d rows.",
-            int(dropped_mask.sum()),
-            len(df),
-        )
+            f"Applied filters. Dropped {int(dropped_mask.sum())} rows; \
+                remaining {len(df)} rows.")
     else:
-        logger.info("Filters applied. No rows dropped. Total rows: %d.", len(df))
+        logger.info("Filters applied. No rows dropped. \
+                    Total rows: %d.", len(df))
     
     return df
