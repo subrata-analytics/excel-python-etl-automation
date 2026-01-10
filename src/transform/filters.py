@@ -51,11 +51,9 @@ def filters_with_lineage(
                 )
         
         logger.info(
-            f"Applied filters. Dropped {int(dropped_mask.sum())} rows; \
-                remaining {len(df)} rows.")
+            f"Applied filters. Dropped {int(dropped_mask.sum())} rows; remaining {len(df)} rows.")
     else:
-        logger.info("Filters applied. No rows dropped. \
-                    Total rows: %d.", len(df))
+        logger.info("Filters applied. No rows dropped. Total rows: %d.", len(df))
     
     return df
 
