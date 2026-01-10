@@ -1,3 +1,7 @@
+# =============================================================================
+# Lineage
+# =============================================================================
+import numpy as np
 import pandas as pd
 from pathlib import Path
 from datetime import datetime, timezone
@@ -48,8 +52,9 @@ def log_lineage(
         old_value: Any,
         new_value: Any,
         rule: str
-):
-    if old_value == new_value:
+    ):
+    
+    if _equal(old_value, new_value):
         return
     
     lineage_writer.write({
@@ -60,3 +65,30 @@ def log_lineage(
         "rule": rule,
         "timestamp": datetime.now(timezone.utc)
     })
+
+
+def _equal(a: Any, b: Any) -> bool:
+    # Treat both missing values as equal
+    if pd.isna(a) and pd.isna(b):
+        return True
+
+    # If only one is missing, not equal
+    if pd.isna(a) or pd.isna(b):
+        return False
+
+    # For numpy scalars, convert to Python scalars
+    if isinstance(a, (np.generic,)) and isinstance(b, (np.generic,)):
+        return a.item() == b.item()
+
+    # For pandas Timestamp or Timedelta
+    if isinstance(a, (pd.Timestamp, pd.Timedelta)) or isinstance(b, (pd.Timestamp, pd.Timedelta)):
+        try:
+            return a == b
+        except Exception:
+            return False
+
+    # Fallback: safe equality check
+    try:
+        return a == b
+    except Exception:
+        return False
