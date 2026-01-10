@@ -80,7 +80,7 @@ def drop_duplicate_rows(
                     row_id=row_id,
                     column="all",
                     old_value=None,
-                    new_value=None,
+                    new_value="N/A",
                     rule="drop_duplicates",
                 )
 
@@ -120,7 +120,7 @@ def drop_empty_rows(
                     row_id=row_id,
                     column="all",
                     old_value="",
-                    new_value="",
+                    new_value="N/A",
                     rule="drop_empty",
                 )
 
@@ -168,7 +168,7 @@ def drop_rows_missing_required(
                     row_id=row_id,
                     column=",".join(required_columns),
                     old_value="",
-                    new_value="",
+                    new_value="N/A",
                     rule="drop_missing_required",
                 )
 
