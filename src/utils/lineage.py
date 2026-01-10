@@ -81,7 +81,9 @@ def _equal(a: Any, b: Any) -> bool:
         return a.item() == b.item()
 
     # For pandas Timestamp or Timedelta
-    if isinstance(a, (pd.Timestamp, pd.Timedelta)) or isinstance(b, (pd.Timestamp, pd.Timedelta)):
+    if (isinstance(a, (pd.Timestamp, pd.Timedelta)) 
+        or 
+        isinstance(b, (pd.Timestamp, pd.Timedelta))):
         try:
             return a == b
         except Exception:
