@@ -1,11 +1,48 @@
-2026-01-07 20:02:51,959 | INFO | profile | ==> Starting data profiling...
-2026-01-07 20:02:51,963 | INFO | profile | ==> Computed missing vlaues: True
-2026-01-07 20:02:51,965 | INFO | profile | ==> Computed missing percentage: True
-2026-01-07 20:02:51,970 | INFO | profile | ==> Computed unique values
-2026-01-07 20:02:51,971 | INFO | profile | ==> Computed data types
-2026-01-07 20:02:51,978 | INFO | profile | ==> Summarized numerical columns
-2026-01-07 20:02:51,984 | INFO | profile | ==> Summarized categorical data
-2026-01-07 20:02:51,986 | INFO | profile | ==> Summarized metrics
-2026-01-07 20:02:51,989 | INFO | profile | ==> Computed outliers
-2026-01-07 20:02:52,000 | INFO | profile | ==> Computed quality score
-2026-01-07 20:02:52,001 | INFO | profile | ==> Profiling completed successfully.
+2026-01-10 12:55:06,756 | INFO | profile | ==> Starting data profiling...
+2026-01-10 12:55:06,758 | INFO | profile | ==> Normalized column names
+2026-01-10 12:55:06,758 | INFO | profile | ==> Extracted profile configuration
+2026-01-10 12:55:06,765 | INFO | profile | ==> Computed missing vlaues: True
+2026-01-10 12:55:06,767 | INFO | profile | ==> Computed missing percentage: True
+2026-01-10 12:55:06,769 | INFO | profile | ==> Computed unique values
+2026-01-10 12:55:06,770 | INFO | profile | ==> Computed data types
+2026-01-10 12:55:06,775 | INFO | profile | ==> Summarized numerical columns
+2026-01-10 12:55:06,784 | INFO | profile | ==> Summarized categorical data
+2026-01-10 12:55:06,785 | INFO | profile | ==> Summarized metrics
+2026-01-10 12:55:06,786 | INFO | profile | ==> Computed outliers
+2026-01-10 12:55:06,794 | INFO | profile | ==> Computed quality score
+2026-01-10 12:55:06,794 | INFO | profile | ==> Profiling completed successfully.
+2026-01-10 12:55:06,815 | INFO | normalize | ==> Ensured stable row identifier.
+2026-01-10 12:55:06,816 | INFO | normalize | ==> Renaming columns.
+2026-01-10 12:55:06,818 | INFO | normalize | ==> Dropping duplicate rows.
+2026-01-10 12:55:06,825 | INFO | normalize | ==> Dropped 150 duplicate rows.
+2026-01-10 12:55:06,826 | INFO | normalize | ==> Dropping empty rows.
+2026-01-10 12:55:06,829 | INFO | normalize | ==> Applying text cleaning.
+2026-01-10 12:55:06,835 | INFO | normalize | ==> Applied text cleaning in store.
+2026-01-10 12:55:06,840 | INFO | normalize | ==> Applied text cleaning in region.
+2026-01-10 12:55:06,848 | INFO | normalize | ==> Applied text cleaning in product_name.
+2026-01-10 12:55:06,854 | INFO | normalize | ==> Applied text cleaning in category.
+2026-01-10 12:55:06,860 | INFO | normalize | ==> Applied text cleaning in notes.
+2026-01-10 12:55:06,861 | INFO | normalize | ==> Applying text standardization.
+2026-01-10 12:55:06,866 | INFO | normalize | ==> Applying reference-based normalization for region and category.
+2026-01-10 12:55:07,089 | INFO | normalize | ==> Applied reference-based normalization.
+2026-01-10 12:55:07,090 | INFO | normalize | ==> Applying numeric cleaning.
+2026-01-10 12:55:07,095 | INFO | normalize | ==> Applied numeric cleaning.
+2026-01-10 12:55:07,416 | INFO | normalize | ==> Applied numeric cleaning.
+2026-01-10 12:55:07,424 | INFO | normalize | ==> Applied numeric cleaning.
+2026-01-10 12:55:07,425 | INFO | normalize | ==> Dropping rows with missing required columns: sale_date, category, product_name, region, quantity, unit_price
+2026-01-10 12:55:07,449 | INFO | normalize | ==> Dropped 2402 rows due to missing required fields.
+2026-01-10 12:55:07,450 | INFO | normalize | ==> Applying date parsing.
+2026-01-10 12:55:07,454 | INFO | normalize | ==> Column 'sale_date' NaNs before: 0, after: 5626.
+2026-01-10 12:55:07,455 | INFO | normalize | ==> Applying feature engineering.
+2026-01-10 12:55:07,457 | INFO | normalize | ==> Derived date parts: sale_year, sale_month, sale_quarter, weekday
+2026-01-10 12:55:07,457 | INFO | normalize | ==> Applying filtering rules.
+2026-01-10 12:55:07,460 | INFO | normalize | ==> Applied filters. Dropped 46 rows; remaining 7552 rows.
+2026-01-10 12:55:07,460 | INFO | normalize | ==> Enforcing schema.
+2026-01-10 12:55:07,463 | INFO | normalize | ==> Enforced schema for column 'sale_date' as 'datetime64[ns]'.
+2026-01-10 12:55:07,463 | INFO | normalize | ==> Enforced schema for column 'quantity' as 'float'.
+2026-01-10 12:55:07,463 | INFO | normalize | ==> Enforced schema for column 'unit_price' as 'float'.
+2026-01-10 12:55:07,463 | INFO | normalize | ==> Enforced schema for column 'total_sales' as 'float'.
+2026-01-10 12:55:07,464 | INFO | normalize | ==> Running validation rules (log-only).
+2026-01-10 12:55:07,465 | WARNING | normalize | ==> Validation: 5594 rows have null 'sale_date'.
+2026-01-10 12:55:07,485 | INFO | normalize | ==> Lineage flushed to disk.
+2026-01-10 12:55:07,485 | INFO | normalize | ==> Normalization complete.
