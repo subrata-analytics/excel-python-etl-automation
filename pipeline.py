@@ -42,10 +42,10 @@ lineage_writer = LineageWriter(lineage_path)
 df_raw = get_raw_data(workbook_path, worksheet_name)
 
 # Get profiling report
-profile_report = profile_data(df_raw, pipeline_cfg, profile_cfg, profile_logger)
+profile_report_before = profile_data(df_raw, pipeline_cfg, profile_cfg, profile_logger)
 
 # Save profiling report of the raw data
-save_profile_report(profile_report, profile_path_before)
+save_profile_report(profile_report_before, profile_path_before)
 
 # Normalize raw data
 df_cleaned = normalize_data(
@@ -57,3 +57,9 @@ df_cleaned = normalize_data(
 
 # Save the cleaned data
 df_cleaned.to_csv(processed_data_path, index=False)
+
+# Get profiling report
+profile_report_after = profile_data(df_cleaned, pipeline_cfg, profile_cfg, profile_logger)
+
+# Save profiling report of the raw data
+save_profile_report(profile_report_after, profile_path_after)
