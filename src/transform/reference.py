@@ -44,16 +44,15 @@ def normalize_with_reference_data(
         for idx in df.index:
             old = original.loc[idx]
             new = cleaned.loc[idx]
-            if old != new:
-                row_id = cast(SupportsInt, df.at[idx, "__row_id__"])
-                log_lineage(
-                    lineage_writer=lineage_writer,
-                    row_id=int(row_id),
-                    column="region",
-                    old_value=old,
-                    new_value=new,
-                    rule="reference_region_normalization",
-                )
+            row_id = cast(SupportsInt, df.at[idx, "__row_id__"])
+            log_lineage(
+                lineage_writer=lineage_writer,
+                row_id=int(row_id),
+                column="region",
+                old_value=old,
+                new_value=new,
+                rule="reference_region_normalization",
+            )
 
     # Normalize category
     if "category" in df.columns:
@@ -72,16 +71,15 @@ def normalize_with_reference_data(
         for idx in df.index:
             old = original.loc[idx]
             new = cleaned.loc[idx]
-            if old != new:
-                row_id = cast(SupportsInt, df.loc[idx, "__row_id__"])
-                log_lineage(
-                    lineage_writer=lineage_writer,
-                    row_id=int(row_id),
-                    column="category",
-                    old_value=old,
-                    new_value=new,
-                    rule="reference_category_normalization",
-                )
+            row_id = cast(SupportsInt, df.loc[idx, "__row_id__"])
+            log_lineage(
+                lineage_writer=lineage_writer,
+                row_id=int(row_id),
+                column="category",
+                old_value=old,
+                new_value=new,
+                rule="reference_category_normalization",
+            )
 
     logger.info("Applied reference-based normalization.")
 
