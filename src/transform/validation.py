@@ -1,8 +1,6 @@
-import numpy as np
 import pandas as pd
 from logging import Logger
-from typing import Any, Dict, List, SupportsInt, cast
-from src.utils.lineage import LineageWriter, log_lineage
+from typing import Any, Dict, List
 
 
 def run_validation(

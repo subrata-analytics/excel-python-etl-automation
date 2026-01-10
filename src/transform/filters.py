@@ -1,7 +1,7 @@
 import pandas as pd
 from logging import Logger
 from typing import Any, Dict
-from src.utils.lineage import LineageWriter, log_lineage
+from ..utils.lineage import LineageWriter, log_lineage
 
 
 def filters_with_lineage(
