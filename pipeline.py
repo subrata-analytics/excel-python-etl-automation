@@ -1,9 +1,16 @@
+# =============================================================================
+# Pipeline
+# =============================================================================
 from src.profile import profile_data
 from src.normalize import normalize_data
+
 from src.extract import get_config, get_raw_data
+
 from src.utils.helpers import save_profile_report
 from src.utils.logger import get_logger
-from src.utils.lineage import LineageWriter, log_lineage
+from src.utils.lineage import LineageWriter
+
+from src.normalize import normalize_data
 
 
 # Extract configurations
@@ -20,6 +27,8 @@ lineage_path = pipeline_cfg["lineage"]["output_file"]
 profile_path_before = pipeline_cfg["profiling_output"]["before"]
 profile_path_after = pipeline_cfg["profiling_output"]["after"]
 
+processed_data_path = pipeline_cfg["output"]["processed"]
+
 # Profile logger
 profile_logger = get_logger("profile", log_path, log_shell=True)
 
@@ -33,16 +42,18 @@ lineage_writer = LineageWriter(lineage_path)
 df_raw = get_raw_data(workbook_path, worksheet_name)
 
 # Get profiling report
-report = profile_data(df_raw, pipeline_cfg, profile_cfg, profile_logger)
+profile_report = profile_data(df_raw, pipeline_cfg, profile_cfg, profile_logger)
 
 # Save profiling report of the raw data
-save_profile_report(report, profile_path_before)
+save_profile_report(profile_report, profile_path_before)
 
 # Normalize raw data
 df_cleaned = normalize_data(
-    df_raw, 
-    pipeline_cfg, 
-    profile_cfg, 
-    normalize_logger, 
+    df_raw,
+    pipeline_cfg,
+    normalize_logger,
     lineage_writer
 )
+
+# Save the cleaned data
+df_cleaned.to_csv(processed_data_path, index=False)
