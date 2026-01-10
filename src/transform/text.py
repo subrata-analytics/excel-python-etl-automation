@@ -41,7 +41,7 @@ def clean_text(
             df[col] = series
     
         if log_enabled:
-            logger.info("Applied text cleaning in {col}.")
+            logger.info(f"Applied text cleaning in {col}.")
     
     return df
 
