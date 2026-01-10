@@ -438,6 +438,7 @@ def _log_numeric_changes_for_column(
             rule=rule,
         )
 
+
 def parse_date(
         df: pd.DataFrame,
         date_parsing_cfg: Dict[str, Any],
@@ -506,4 +507,62 @@ def add_feature(
         if log_enabled:
             logger.info(f"Derived date parts: {", ".join(date_parts)}")
 
+    return df
+
+
+def filters_with_lineage(
+        df: pd.DataFrame,
+        filters_cfg: Dict[str, Any],
+        lineage_writer: LineageWriter,
+        logger: Logger,
+    ) -> pd.DataFrame:
+    """
+    Apply filtering rules and log drop-row lineage for removed rows.
+    """
+    logger.info("Applying filtering rules.")
+
+    df = df.copy()
+
+    quantity_gt_zero = filters_cfg.get("quantity_greater_than_zero", False)
+    total_sales_non_negative = filters_cfg.get("total_sales_non_negative", False)
+    log_enabled = filters_cfg.get("log", False)
+
+    if not (quantity_gt_zero or total_sales_non_negative):
+        return df
+
+    initial_count = len(df)
+    keep_mask = pd.Series(True, index=df.index)
+
+    if quantity_gt_zero and "quantity" in df.columns:
+        keep_mask &= df["quantity"] > 0
+
+    if total_sales_non_negative and "total_sales" in df.columns:
+        keep_mask &= df["total_sales"] >= 0
+
+    dropped_mask = ~keep_mask
+
+    if dropped_mask.any():
+        dropped = df.loc[dropped_mask, ["__row_id__"]].copy()
+        df.drop(index=dropped.index, inplace=True)
+
+        if log_enabled:
+            for _, row in dropped.iterrows():
+                row_id = int(row["__row_id__"])
+                log_lineage(
+                    lineage_writer=lineage_writer,
+                    row_id=row_id,
+                    column="quantity, total_sales",
+                    old_value="zero or negative numbers",
+                    new_value="N/A",
+                    rule="filters",
+                )
+
+        logger.info(
+            "Applied filters. Dropped %d rows; remaining %d rows.",
+            int(dropped_mask.sum()),
+            len(df),
+        )
+    else:
+        logger.info("Filters applied. No rows dropped. Total rows: %d.", len(df))
+    
     return df
