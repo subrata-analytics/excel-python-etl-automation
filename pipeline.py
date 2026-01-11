@@ -44,60 +44,70 @@ curation_logger = get_logger("curate", log_path, log_shell=True)
 # Lineage Writer
 lineage_writer = LineageWriter(lineage_path)
 
-#===============================================================================
-# Extract raw data
-#===============================================================================
-df_raw = get_raw_data(workbook_path, worksheet_name)
 
-#===============================================================================
-# Profiling
-#===============================================================================
-# Get profiling report of the raw data
-profile_report_before = profile_data(
-    df_raw, 
-    pipeline_cfg, 
-    profile_cfg, 
-    profile_logger
-)
+def run_pipeline():
+    """
+        Run the Extract, Transform, and Load Script in a sequence
+    """
 
-#===============================================================================
-# Transformation
-#===============================================================================
-# Normalize raw data
-df_cleaned = normalize_data(
-    df_raw,
-    pipeline_cfg,
-    normalize_logger,
-    lineage_writer
-)
+    #===========================================================================
+    # Extract raw data
+    #===========================================================================
+    df_raw = get_raw_data(workbook_path, worksheet_name)
 
-# Curate cleaned data
-df_curated = curate_data(
-    df_cleaned,
-    curation_cfg,
-    curation_logger
-)
+    #===========================================================================
+    # Profiling
+    #===========================================================================
+    # Get profiling report of the raw data
+    profile_report_before = profile_data(
+        df_raw, 
+        pipeline_cfg, 
+        profile_cfg, 
+        profile_logger
+    )
 
-#===============================================================================
-# Profiling
-#===============================================================================
-# Get profiling report of the cleaned data
-profile_report_after = profile_data(
-    df_cleaned, 
-    pipeline_cfg, 
-    profile_cfg, 
-    profile_logger
-)
+    #===========================================================================
+    # Transformation
+    #===========================================================================
+    # Normalize raw data
+    df_cleaned = normalize_data(
+        df_raw,
+        pipeline_cfg,
+        normalize_logger,
+        lineage_writer
+    )
+
+    # Curate cleaned data
+    df_curated = curate_data(
+        df_cleaned,
+        curation_cfg,
+        curation_logger
+    )
+
+    #===========================================================================
+    # Profiling
+    #===========================================================================
+    # Get profiling report of the cleaned data
+    profile_report_after = profile_data(
+        df_cleaned, 
+        pipeline_cfg, 
+        profile_cfg, 
+        profile_logger
+    )
 
 
-#===============================================================================
-# Loading
-#===============================================================================
-# Save profiling report of the raw data
-save_profile_report(profile_report_before, profile_path_before)
+    #===========================================================================
+    # Loading
+    #===========================================================================
+    # Save profiling report of the raw data
+    save_profile_report(profile_report_before, profile_path_before)
 
-# Save the cleaned data
-df_cleaned.to_csv(processed_data_path, index=False)
+    # Save the cleaned data
+    df_cleaned.to_csv(processed_data_path, index=False)
 
-# Save curated data
-df_curated.to_csv(curate_data_path, index=False)
+    # Save curated data
+    df_curated.to_csv(curate_data_path, index=False)
+
+
+if __name__ == "__main__":
+    run_pipeline()
