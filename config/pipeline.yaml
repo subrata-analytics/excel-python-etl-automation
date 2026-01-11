@@ -179,4 +179,31 @@ validation:
   sale_date_not_null: true
   region_uppercase: true
   category_uppercase: true
+
+# ============================================
+# Curating Rules
+# ============================================
+curation:
+  columns:
+    - sale_date
+    - sale_year
+    - sale_month
+    - sale_quarter
+    - weekday
+    - store
+    - region
+    - category
+    - product_name
+    - quantity
+    - unit_price
+    - total_sales
+  reference:
+    regions:
+      - EAST
+      - WEST
+      - NORTH
+      - SOUTH
+    categories:
+      - ACCESSORIES
+      - ELECTRONICS
 #==================== end ====================
